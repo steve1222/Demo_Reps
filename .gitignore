@@ -1,0 +1,9 @@
+*/Build/
+*/Binaries
+*/DerivedDataCache
+*/Saved
+Testing_Grounds/Intermediate/Build/
+Testing_Grounds/Content/StarterContent/
+Testing_Grounds/Config/
+Testing_Grounds/Intermediate/Config/
+*.VC.db
