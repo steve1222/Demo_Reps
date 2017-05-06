@@ -10,7 +10,7 @@ UPositionReporter::UPositionReporter()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
+	UE_LOG(LogTemp, Warning, TEXT("PENiS WHOERS"));
 	// ...
 }
 
@@ -19,7 +19,12 @@ UPositionReporter::UPositionReporter()
 void UPositionReporter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	FString dickcake = (*GetOwner()).GetName();
+	 
+	 FString asshat= GetOwner()->GetActorLocation().ToString();
+	 GetWorld();
+	UE_LOG(LogTemp, Error, TEXT("LOCATION NIGGER: %s"),*asshat);
 	// ...
 	
 }
