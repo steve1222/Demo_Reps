@@ -20,7 +20,7 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// ...
+	PlayerPawnReference = GetWorld()->GetFirstPlayerController()->GetPawn();
 	
 }
 
@@ -36,8 +36,10 @@ void UOpenDoor::OpenDoor()
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if ((*TrigPointer).IsOverlappingActor(ActorPointer)) {
-		OpenDoor();
+	if (TriggerReference){
+		if (TriggerReference->IsOverlappingActor(PlayerPawnReference)) {
+			OpenDoor();
+		}
 	}
 	// ...
 }

@@ -30,10 +30,11 @@ private:
 	float OpenAngle = 90.f;
 
 	UPROPERTY(EditAnywhere)
-	ATriggerVolume* TrigPointer;
-	UPROPERTY(EditAnywhere)
-		AActor* ActorPointer;
-	UPROPERTY(EditAnywhere)
-		APawn* PawnPointer;
+	ATriggerVolume* TriggerReference;
+
+	AActor* PlayerPawnReference;
+
+//	UPROPERTY(EditAnywhere)
+	//	APawn* PawnPointer;
 	
 };

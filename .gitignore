@@ -9,3 +9,4 @@ Testing_Grounds/Intermediate/Config/
 *.VC.db
 Testing_Grounds/Intermediate/
 *.sdf
+*.suo
