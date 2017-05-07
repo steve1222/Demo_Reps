@@ -31,12 +31,13 @@ void UGrabber::BeginPlay()
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	//get ass
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
 
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
 		OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
-
+	FCollisionQueryParams MyTraceParams(FName(TEXT("ASS MONKEY PARAMS")), false, GetOwner());
 	//UE_LOG(LogTemp, Warning, TEXT("%s"), *PlayerViewPointRotation.ToString())
 	//	UE_LOG(LogTemp, Warning, TEXT("%s"), *(PlayerViewPointRotation.Vector()).ToString())
 	//	UE_LOG(LogTemp, Warning, TEXT("  "))
@@ -44,6 +45,19 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		FVector PlayerDirection = PlayerViewPointRotation.Vector();
 		FVector LineTraceEnd = (PlayerViewPointLocation + PlayerDirection*Reach);
 		DrawDebugLine(GetWorld(), PlayerViewPointLocation, LineTraceEnd, FColor(255, 0, 0), false, 0.f, 1.0f, 50.0f);
-
+		FHitResult Hit;
+		GetWorld()->LineTraceSingleByObjectType(OUT Hit,
+			PlayerViewPointLocation,
+			LineTraceEnd,
+			FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+			MyTraceParams);
+		if (Hit.GetActor() != nullptr) {
+			AActor* HitActor = Hit.GetActor();
+			FString ActorName = HitActor->GetName();
+			UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR: %s"), *ActorName);
+		}
+		
+			
+		
 }
 
