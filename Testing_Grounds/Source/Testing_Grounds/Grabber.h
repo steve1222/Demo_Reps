@@ -6,7 +6,7 @@
 #include "Grabber.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Penis), meta=(BlueprintSpawnableComponent) )
 class TESTING_GROUNDS_API UGrabber : public UActorComponent
 {
 	GENERATED_BODY()
@@ -14,6 +14,8 @@ class TESTING_GROUNDS_API UGrabber : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UGrabber();
+	UPROPERTY(EditAnywhere)
+		float Reach = 1000.0f;
 
 protected:
 	// Called when the game starts
