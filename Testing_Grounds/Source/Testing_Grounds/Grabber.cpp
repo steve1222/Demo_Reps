@@ -62,6 +62,8 @@ void UGrabber::ActionGrab()
 {
 	HitResult = FindPhysicsBodyinRange();
 	auto ComponentToGrab = HitResult.GetComponent();
+
+	if (!physxHandleComp) { return; }
 	if (ComponentToGrab!=nullptr) {
 		physxHandleComp->GrabComponentAtLocationWithRotation(
 			ComponentToGrab,
@@ -114,6 +116,8 @@ const FHitResult UGrabber::FindPhysicsBodyinRange()
 
 void UGrabber::ActionRelease()
 {
+	if (!physxHandleComp) { return; }
+
 	physxHandleComp->ReleaseComponent();
 	UE_LOG(LogTemp, Error, TEXT("%s: GRAB PENIS RELEASED!!."), *GetOwner()->GetName())
 }
@@ -121,6 +125,7 @@ void UGrabber::ActionRelease()
 // Called every frame
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
+	
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	//get ass
 	//FHitResult Hit = FindPhysicsBodyinRange();
@@ -130,6 +135,8 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
 	FVector PlayerDirection = PlayerViewPointRotation.Vector();
 	FVector LineTraceEnd;
+
+	if (!physxHandleComp) { return; }
 	if (HitResult.GetActor()) {
 		LineTraceEnd = (PlayerViewPointLocation + PlayerDirection*GrabbedActorDistance);
 		physxHandleComp->SetTargetLocation(LineTraceEnd);
