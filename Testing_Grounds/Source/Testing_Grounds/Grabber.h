@@ -40,7 +40,7 @@ public:
 	AActor* HitActor = nullptr;
 	FString ActorName;
 	FHitResult HitResult;
-	float Magnitude;
+	float GrabbedActorDistance;
 	FVector PlayerViewPointLocation;
 	
 };

@@ -49,7 +49,7 @@ void UGrabber::BindActionToGrab()
 		UE_LOG(LogTemp, Warning, TEXT("%s: Input Component found."), *GetOwner()->GetName())
 			// bind actions
 		ownerInputComponent->BindAction("Grab Penis", IE_Pressed, this, &UGrabber::ActionGrab);
-		ownerInputComponent->BindAction("Grab Penis", IE_Released, this, &UGrabber::ActionRelease);
+		ownerInputComponent->BindAction("Release Penis", IE_Released, this, &UGrabber::ActionRelease);
 	}
 	//blah
 	else {
@@ -70,11 +70,11 @@ void UGrabber::ActionGrab()
 			);
 		FVector HitActorLocation = HitResult.GetActor()->GetActorLocation();
 		FVector ActorDifference = (HitActorLocation - PlayerViewPointLocation);
-		Magnitude = ActorDifference.Size();
+		GrabbedActorDistance = ActorDifference.Size();//get the magnitude of the difference of grabbed object to player
 
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("%s: GRAB PENIS PRESSED!!."), *GetOwner()->GetName())
+	//UE_LOG(LogTemp, Warning, TEXT("%s: GRAB PENIS PRESSED!!."), *GetOwner()->GetName())
 
 }
 
@@ -131,12 +131,10 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	FVector PlayerDirection = PlayerViewPointRotation.Vector();
 	FVector LineTraceEnd;
 	if (HitResult.GetActor()) {
-		LineTraceEnd = (PlayerViewPointLocation + PlayerDirection*Magnitude);
+		LineTraceEnd = (PlayerViewPointLocation + PlayerDirection*GrabbedActorDistance);
 		physxHandleComp->SetTargetLocation(LineTraceEnd);
 	}
 		//ComponentLocation.Distance;
 		
 	
-		
 }
-

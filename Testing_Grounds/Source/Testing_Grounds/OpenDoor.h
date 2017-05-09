@@ -21,22 +21,33 @@ protected:
 
 	void OpenDoor();
 	void CloseDoor();
-
+	// legacy version for opening door on overlap
+	void InstantTriggerDoor();
+	//returns total trigger mass in Kg
+	float GetTotalMassOfActorsOnPlate();
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+	//total angle to add to mesh's rotator yaw on open animation
 	UPROPERTY(EditAnywhere)
 	float OpenDelta = 90.f;
-
+	// optional trigger that opens door instantly on player overlap
 	UPROPERTY(EditAnywhere)
-	ATriggerVolume* TriggerReference;
+	ATriggerVolume* InstantTriggerReference;
+	// optional trigger that opens door when total weight equals desired weight in kg
+	UPROPERTY(EditAnywhere)
+	ATriggerVolume* TotalMassTriggerReference;
 
 	AActor* PlayerPawnReference;
 
+	//the delay in seconds before closing door after stepping off volume
 	UPROPERTY(EditAnywhere)
 	float DoorCloseDelay = 1.f;
+	// the total mass needed to open door for weighted trigger reference
+	UPROPERTY(EditAnywhere)
+	float RequiredOpenMass = 100.f;
 
 	float LastDoorOpenTime;
 	AActor* Owner = GetOwner();

@@ -3,7 +3,7 @@
 #include "Testing_Grounds.h"
 #include "OpenDoor.h"
 
-
+#define OUT
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
 {
@@ -42,17 +42,53 @@ void UOpenDoor::CloseDoor()
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (TriggerReference){
-		if (TriggerReference->IsOverlappingActor(PlayerPawnReference)) {
+
+	// if we want to set a trigger that opens door instantly on player overlap
+	if (InstantTriggerReference){
+		InstantTriggerDoor();
+	}
+	if (TotalMassTriggerReference) {
+		if (GetTotalMassOfActorsOnPlate() > RequiredOpenMass) {
 			OpenDoor();
 			LastDoorOpenTime = GetWorld()->GetTimeSeconds();
 		}
-		if (LastDoorOpenTime) {
-			if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelay) {
-				CloseDoor();
-			}
+		if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelay) {
+			CloseDoor();
 		}
 	}
 	// ...
+}
+
+void UOpenDoor::InstantTriggerDoor() {
+	if (InstantTriggerReference->IsOverlappingActor(PlayerPawnReference)) {
+		OpenDoor();
+		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+	}
+	if (LastDoorOpenTime) {
+		if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelay) {
+			CloseDoor();
+		}
+	}
+}
+
+float UOpenDoor::GetTotalMassOfActorsOnPlate() {
+	float Total_Mass = 0.f;
+	TArray<AActor*> OverlappingActorArray;
+	TotalMassTriggerReference->GetOverlappingActors(OUT OverlappingActorArray);
+	for (const auto* element : OverlappingActorArray) {
+		//UE_LOG(LogTemp, Warning, TEXT("Overlapping Actor entity: %s"), *(element->GetName()))
+			Total_Mass+= (element->FindComponentByClass<UPrimitiveComponent>()->GetMass());
+			
+		/* //doesn't work \/
+			UStaticMeshComponent* comp = Cast<UStaticMeshComponent>(index);
+			if (comp)
+			{
+				Total_Mass += comp->GetMass();
+				UE_LOG(LogTemp, Warning, TEXT("Total Mass: %f"), Total_Mass)
+			}
+			             /\ */
+	}
+	if (Total_Mass) { UE_LOG(LogTemp, Warning, TEXT("Total Mass: %f"), Total_Mass) }
+	return Total_Mass;
 }
 
