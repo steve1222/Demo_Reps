@@ -29,10 +29,10 @@ void UGrabber::BeginPlay()
 /// look for attached physics handle
 void UGrabber::GetPhysicsHandle() {
 	//
-	physxHandlerComp = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	physxHandleComp = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 
 	//blah
-	if (physxHandlerComp) {
+	if (physxHandleComp) {
 		UE_LOG(LogTemp, Warning, TEXT("%s: Grabber Component found."), *GetOwner()->GetName())
 	}
 	else {
@@ -48,8 +48,8 @@ void UGrabber::BindActionToGrab()
 	if (ownerInputComponent) {
 		UE_LOG(LogTemp, Warning, TEXT("%s: Input Component found."), *GetOwner()->GetName())
 			// bind actions
-		ownerInputComponent->BindAction("Grab Penis", IE_Pressed, this, &UGrabber::GrabPressed);
-		ownerInputComponent->BindAction("Grab Penis", IE_Released, this, &UGrabber::GrabReleased);
+		ownerInputComponent->BindAction("Grab Penis", IE_Pressed, this, &UGrabber::ActionGrab);
+		ownerInputComponent->BindAction("Grab Penis", IE_Released, this, &UGrabber::ActionRelease);
 	}
 	//blah
 	else {
@@ -58,16 +58,29 @@ void UGrabber::BindActionToGrab()
 }
 
 
-
-void UGrabber::GrabPressed()
+void UGrabber::ActionGrab()
 {
-	FindPhysicsObjectinRange();
+	HitResult = FindPhysicsBodyinRange();
+	auto ComponentToGrab = HitResult.GetComponent();
+	if (ComponentToGrab!=nullptr) {
+		physxHandleComp->GrabComponentAtLocationWithRotation(
+			ComponentToGrab,
+			NAME_None,
+			ComponentToGrab->GetOwner()->GetActorLocation(), ComponentToGrab->GetOwner()->GetActorRotation()
+			);
+		FVector HitActorLocation = HitResult.GetActor()->GetActorLocation();
+		FVector ActorDifference = (HitActorLocation - PlayerViewPointLocation);
+		Magnitude = ActorDifference.Size();
+
+	}
+
 	UE_LOG(LogTemp, Warning, TEXT("%s: GRAB PENIS PRESSED!!."), *GetOwner()->GetName())
+
 }
 
-const FHitResult UGrabber::FindPhysicsObjectinRange()
+const FHitResult UGrabber::FindPhysicsBodyinRange()
 {
-	FVector PlayerViewPointLocation;
+	
 	FRotator PlayerViewPointRotation;
 
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
@@ -93,13 +106,15 @@ const FHitResult UGrabber::FindPhysicsObjectinRange()
 		AActor* HitActor = Hit.GetActor();
 		FString ActorName = HitActor->GetName();
 		UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR: %s"), *ActorName);
+
 	}
 
-	return FHitResult();
+	return Hit;
 }
 
-void UGrabber::GrabReleased()
+void UGrabber::ActionRelease()
 {
+	physxHandleComp->ReleaseComponent();
 	UE_LOG(LogTemp, Error, TEXT("%s: GRAB PENIS RELEASED!!."), *GetOwner()->GetName())
 }
 
@@ -108,8 +123,20 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	//get ass
-
-			
+	//FHitResult Hit = FindPhysicsBodyinRange();
+	FVector PlayerViewPointLocation;
+	FRotator PlayerViewPointRotation;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+		OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
+	FVector PlayerDirection = PlayerViewPointRotation.Vector();
+	FVector LineTraceEnd;
+	if (HitResult.GetActor()) {
+		LineTraceEnd = (PlayerViewPointLocation + PlayerDirection*Magnitude);
+		physxHandleComp->SetTargetLocation(LineTraceEnd);
+	}
+		//ComponentLocation.Distance;
+		
+	
 		
 }
 

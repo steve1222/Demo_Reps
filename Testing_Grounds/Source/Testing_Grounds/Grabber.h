@@ -17,8 +17,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		float Reach = 1000.0f;
 	// ray-cast and grab whats in reach
-	void GrabPressed();
-	void GrabReleased();
+	void ActionGrab();
+	void ActionRelease();
 
 	
 
@@ -30,15 +30,18 @@ protected:
 	//setup (assumed) attached input component
 	void BindActionToGrab();
 	//return hit result after finding a physics component
-	const FHitResult FindPhysicsObjectinRange();
+	const FHitResult FindPhysicsBodyinRange();
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
-	UPhysicsHandleComponent* physxHandlerComp = nullptr;
+	UPhysicsHandleComponent* physxHandleComp = nullptr;
 	UInputComponent* ownerInputComponent;
 	AActor* HitActor = nullptr;
 	FString ActorName;
+	FHitResult HitResult;
+	float Magnitude;
+	FVector PlayerViewPointLocation;
 	
 };
 
