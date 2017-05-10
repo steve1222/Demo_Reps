@@ -30,11 +30,13 @@ void UOpenDoor::BeginPlay()
 
 void UOpenDoor::OpenDoor()
 {
-	Owner->SetActorRotation(openRotation);
+	//Owner->SetActorRotation(openRotation);
+	OnOpenRequest.Broadcast();
 }
 void UOpenDoor::CloseDoor()
 {
-	Owner->SetActorRotation(closeRotation);
+	OnCloseRequest.Broadcast();
+	//Owner->SetActorRotation(closeRotation);
 }
 
 
@@ -47,6 +49,7 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	if (InstantTriggerReference){
 		InstantTriggerDoor();
 	}
+	// if we are using a trigger that waits for total mass to validate, before doorOpen
 	if (TotalMassTriggerReference) {
 		if (GetTotalMassOfActorsOnPlate() > RequiredOpenMass) {
 			OpenDoor();
